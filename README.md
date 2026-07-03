@@ -1,274 +1,194 @@
 # Egzamin ZPO - Projekty
 
+Repozytorium zawiera projekty egzaminacyjne z przedmiotu Zaawansowane Programowanie Obiektowe zaimplementowane w trzech technologiach: **Java (Spring Boot)**, **Python (FastAPI)** oraz **NodeJS (Express)**.
+
+Wszystkie algorytmy biznesowe (ocenianie quizów, zarządzanie listami rezerwowymi fitness, dobór stolika w restauracji, wyliczanie BMR i sumowanie kalorii w diecie) zostały zaimplementowane w **paradygmacie programowania funkcyjnego** (brak tradycyjnych pętli `for`/`while` oraz instrukcji warunkowych `if`; zastosowano Stream API, lambdy, `.map()`, `.filter()`, `.reduce()`, operatory logiczne oraz wyrażenia trójargumentowe).
+
+---
+
 ## Struktura plików
 
 ```
 ├── e-learning-platform/
 │   ├── java/                              # Spring Boot
-│   │   ├── pom.xml
-│   │   └── src/
-│   │       ├── main/
-│   │       │   ├── java/com/elearning/
-│   │       │   │   ├── ElearningApplication.java
-│   │       │   │   ├── config/
-│   │       │   │   │   ├── SecurityConfig.java
-│   │       │   │   │   └── SwaggerConfig.java
-│   │       │   │   ├── controller/
-│   │       │   │   │   ├── QuizApiController.java
-│   │       │   │   │   ├── QuizController.java
-│   │       │   │   │   └── TeacherController.java
-│   │       │   │   ├── dto/
-│   │       │   │   │   ├── QuizResultResponse.java
-│   │       │   │   │   └── QuizSubmitRequest.java
-│   │       │   │   ├── model/
-│   │       │   │   │   ├── Question.java
-│   │       │   │   │   └── QuizResult.java
-│   │       │   │   ├── repository/
-│   │       │   │   │   ├── QuestionRepository.java
-│   │       │   │   │   └── QuizResultRepository.java
-│   │       │   │   └── service/
-│   │       │   │       ├── QuizService.java
-│   │       │   │       └── ScoreCalculator.java
-│   │       │   └── resources/
-│   │       │       ├── application.properties
-│   │       │       ├── data.sql
-│   │       │       └── templates/
-│   │       │           ├── quiz.html
-│   │       │           ├── results.html
-│   │       │           └── summary.html
-│   │       └── test/java/com/elearning/
-│   │           └── ScoreCalculatorTest.java
-│   │
-│   ├── python/                             # FastAPI
-│   │   ├── requirements.txt
-│   │   ├── app.py
-│   │   ├── models.py
-│   │   ├── schemas.py
-│   │   ├── routers/
-│   │   │   ├── __init__.py
-│   │   │   ├── auth.py
-│   │   │   ├── quiz.py
-│   │   │   └── teacher.py
-│   │   ├── services/
-│   │   │   ├── __init__.py
-│   │   │   └── score_calculator.py
-│   │   ├── static/
-│   │   ├── templates/
-│   │   │   ├── quiz.html
-│   │   │   ├── results.html
-│   │   │   └── summary.html
-│   │   └── tests/
-│   │       ├── __init__.py
-│   │       └── test_score_calculator.py
-│   │
-│   └── nodejs/                             # Express
-│       ├── package.json
-│       ├── server.js
-│       ├── config/
-│       │   └── config.json
-│       ├── middleware/
-│       │   └── auth.js
-│       ├── models/
-│       │   ├── index.js
-│       │   ├── question.js
-│       │   └── quizResult.js
-│       ├── routes/
-│       │   ├── quiz.js
-│       │   └── teacher.js
-│       ├── services/
-│       │   └── scoreCalculator.js
-│       ├── static/
-│       ├── tests/
-│       │   └── scoreCalculator.test.js
-│       └── views/
-│           ├── quiz.ejs
-│           ├── results.ejs
-│           └── summary.ejs
+│   ├── python/                            # FastAPI
+│   └── nodejs/                            # Express
 │
-└── fitness-registration/
-    ├── java/                               # Spring Boot
-    │   ├── pom.xml
-    │   └── src/
-    │       ├── main/
-    │       │   ├── java/com/fitness/
-    │       │   │   ├── FitnessApplication.java
-    │       │   │   ├── config/
-    │       │   │   │   ├── SecurityConfig.java
-    │       │   │   │   └── SwaggerConfig.java
-    │       │   │   ├── controller/
-    │       │   │   │   ├── FitnessApiController.java
-    │       │   │   │   └── FitnessController.java
-    │       │   │   ├── model/
-    │       │   │   │   ├── FitnessClass.java
-    │       │   │   │   └── Registration.java
-    │       │   │   ├── repository/
-    │       │   │   │   ├── FitnessClassRepository.java
-    │       │   │   │   └── RegistrationRepository.java
-    │       │   │   └── service/
-    │       │   │       └── RegistrationService.java
-    │       │   └── resources/
-    │       │       ├── application.properties
-    │       │       ├── data.sql
-    │       │       └── templates/
-    │       │           └── fitness.html
-    │       └── test/java/com/fitness/
-    │           └── RegistrationServiceTest.java
-    │
-    ├── python/                              # FastAPI
-    │   ├── requirements.txt
-    │   ├── app.py
-    │   ├── models.py
-    │   ├── routers/
-    │   │   ├── __init__.py
-    │   │   ├── auth.py
-    │   │   └── fitness.py
-    │   ├── services/
-    │   │   ├── __init__.py
-    │   │   └── registration_service.py
-    │   ├── static/
-    │   ├── templates/
-    │   │   └── fitness.html
-    │   └── tests/
-    │       ├── __init__.py
-    │       └── test_registration.py
-    │
-    └── nodejs/                              # Express
-        ├── package.json
-        ├── server.js
-        ├── config/
-        │   └── config.json
-        ├── middleware/
-        │   └── auth.js
-        ├── models/
-        │   ├── index.js
-        │   ├── fitnessClass.js
-        │   └── registration.js
-        ├── routes/
-        │   └── fitness.js
-        ├── services/
-        │   └── registrationService.js
-        ├── static/
-        ├── tests/
-        │   └── registrationService.test.js
-        └── views/
-            └── fitness.ejs
+├── fitness-registration/
+│   ├── java/                              # Spring Boot
+│   ├── python/                            # FastAPI
+│   └── nodejs/                            # Express
+│
+├── restaurant-management/
+│   ├── java/                              # Spring Boot
+│   ├── python/                            # FastAPI
+│   └── nodejs/                            # Express
+│
+└── diet-tracker/
+    ├── java/                              # Spring Boot
+    ├── python/                            # FastAPI
+    └── nodejs/                            # Express
 ```
+
+---
 
 ## Opis projektów
 
-### e-learning-platform (Ocenianie quizów)
+### 1. e-learning-platform (Ocenianie quizów)
 
 | Komponent | Java | Python | NodeJS |
 |-----------|------|--------|--------|
 | Framework | Spring Boot 3.2 | FastAPI | Express |
-| ORM | JPA/Hibernate | SQLAlchemy | Sequelize |
-| Baza | H2 (memory) | SQLite | SQLite |
+| Baza | H2 (in-memory) | SQLite | SQLite |
 | UI | Thymeleaf | Jinja2 | EJS |
 | Security | Spring Security | Basic Auth | express-basic-auth |
-| API docs | springdoc (Swagger) | Swagger (FastAPI) | Swagger (swagger-ui-express) |
-| Test | JUnit 5 | pytest | Jest |
+| API docs | Swagger UI | Swagger UI | Swagger UI |
+| Testy | JUnit 5 | pytest | Jest |
 
 **Funkcjonalności:**
-- Baza: `Question` (treść, poprawna odpowiedź, punkty, opcje A-D), `QuizResult` (userId, score, percentage, passed)
-- UI: rozwiązywanie quizu (formularz z radio buttonami), podsumowanie z wynikiem
-- Algorytm: zaimplementowany w paradygmacie funkcyjnym (brak tradycyjnych pętli i instrukcji warunkowych `if`; użycie Stream API, lambda, `.map()`, `.filter()`, `.reduce()` oraz wyrażeń trójargumentowych). Punktacja: +1 za poprawną, -0.5 za złą, 0 za brak; próg zaliczenia >50%
-- REST: `POST /api/quiz/submit` przyjmuje odpowiedzi, zwraca procentowy wynik
-- Security: tylko STUDENT może wysyłać odpowiedzi, TEACHER widzi wyniki wszystkich
-- Test: 8 przypadków testowych kalkulatora punktacji
+- Baza: `Question` (treść, opcje A-D, poprawna odpowiedź, punkty), `QuizResult` (userId, score, percentage, passed)
+- UI: Widok rozwiązywania quizu oraz podsumowanie z wynikiem i statusem zaliczenia.
+- Algorytm (funkcyjny): Obliczanie oceny (poprawna +1, brak 0, błędna -0.5), zaliczenie przy >50%.
+- REST: `POST /api/quiz/submit` przyjmuje odpowiedzi, zwraca procentowy wynik.
+- Security: Tylko STUDENT może wysłać odpowiedzi. TEACHER widzi wyniki wszystkich.
 
-### fitness-registration (Listy rezerwowe)
+---
+
+### 2. fitness-registration (Listy rezerwowe)
 
 | Komponent | Java | Python | NodeJS |
 |-----------|------|--------|--------|
 | Framework | Spring Boot 3.2 | FastAPI | Express |
-| ORM | JPA/Hibernate | SQLAlchemy | Sequelize |
-| Baza | H2 (memory) | SQLite | SQLite |
+| Baza | H2 (in-memory) | SQLite | SQLite |
 | UI | Thymeleaf | Jinja2 | EJS |
 | Security | Spring Security | Basic Auth | express-basic-auth |
-| API docs | springdoc (Swagger) | Swagger (FastAPI) | Swagger (swagger-ui-express) |
-| Test | JUnit 5 | pytest | Jest |
+| API docs | Swagger UI | Swagger UI | Swagger UI |
+| Testy | JUnit 5 | pytest | Jest |
 
 **Funkcjonalności:**
-- Baza: `FitnessClass` (typ, dzień, godzina, max pojemność), `Registration` (userId, classId, status: MAIN/WAITING, position)
-- UI: lista zajęć w tygodniu z przyciskami "Register" / "Unregister"
-- Algorytm: zaimplementowany w paradygmacie funkcyjnym (brak tradycyjnych pętli i instrukcji warunkowych `if`; użycie Stream API, lambda, `.map()`, `.filter()`, `.reduce()` oraz wyrażeń trójargumentowych). Zarządzanie kolejką: max 20 osób na liście głównej, 21. trafia na rezerwę z pozycją; wypisanie się kogoś z listy głównej "wciąga" pierwszą osobę z rezerwy
-- REST: `POST /api/fitness/unregister/{classId}` uruchamia logikę kolejkowania
-- Security: tylko USER może się zapisywać/wypisywać
-- Test: przejście z listy rezerwowej na główną po zwolnieniu miejsca
+- Baza: `FitnessClass` (typ, max pojemność), `Registration` (userId, status: MAIN/WAITING, pozycja w kolejce)
+- UI: Lista dostępnych zajęć w tygodniu z przyciskami "Zapisz się" oraz "Wypisz się".
+- Algorytm (funkcyjny): Obsługa kolejki rezerwowej. Wypisanie się z listy głównej automatycznie promuje osobę z pozycji 1 na liście rezerwowej i przesuwa w górę pozostałych oczekujących.
+- REST: `POST /api/fitness/unregister/{classId}` wyrejestrowuje użytkownika i reorganizuje kolejki.
+- Security: Dostępne tylko dla zalogowanych użytkowników z rolą USER.
 
-## Uruchomienie
+---
 
-### Java
-```bash
-cd e-learning-platform/java
-mvn spring-boot:run    # http://localhost:8080
+### 3. restaurant-management (Zarządzanie stolikami)
 
-cd fitness-registration/java
-mvn spring-boot:run    # http://localhost:8081
-```
+| Komponent | Java | Python | NodeJS |
+|-----------|------|--------|--------|
+| Framework | Spring Boot 3.2 | FastAPI | Express |
+| Baza | H2 (in-memory) | SQLite | SQLite |
+| UI | Thymeleaf | Jinja2 | EJS |
+| Security | Spring Security | Basic Auth | express-basic-auth |
+| API docs | Swagger UI | Swagger UI | Swagger UI |
+| Testy | JUnit 5 | pytest | Jest |
 
-### Python
-```bash
-cd e-learning-platform/python
-pip install -r requirements.txt
-uvicorn app:app --reload    # http://localhost:8000
+**Funkcjonalności:**
+- Baza: `Table` (liczba miejsc, lokalizacja wewnątrz/ogródek), `Reservation` (godzina, liczba gości, userId)
+- UI: Wyszukiwanie stolika na konkretną godzinę dla X osób z opcją rezerwacji.
+- Algorytm (funkcyjny - Best-Fit): Dobór optymalnego wolnego stolika o jak najmniejszej pasującej pojemności (np. dla 3 osób szuka najpierw wolnego stolika 3- lub 4-osobowego zamiast blokować 8-osobowy).
+- REST: `GET /api/restaurant/tables/search` zwraca optymalny wolny stolik spełniający kryteria.
+- Security: Rezerwować mogą tylko zalogowani goście (`GUEST`). Kelner (`WAITER`) widzi podsumowanie rezerwacji na cały dzień.
 
-cd fitness-registration/python
-pip install -r requirements.txt
-uvicorn app:app --reload    # http://localhost:8000
-```
+---
 
-### NodeJS
-```bash
-cd e-learning-platform/nodejs
-npm install
-npm start                  # http://localhost:3000
+### 4. diet-tracker (Zapotrzebowanie kaloryczne)
 
-cd fitness-registration/nodejs
-npm install
-npm start                  # http://localhost:3001
-```
+| Komponent | Java | Python | NodeJS |
+|-----------|------|--------|--------|
+| Framework | Spring Boot 3.2 | FastAPI | Express |
+| Baza | H2 (in-memory) | SQLite | SQLite |
+| UI | Thymeleaf | Jinja2 | EJS |
+| Security | Spring Security | Basic Auth | express-basic-auth |
+| API docs | Swagger UI | Swagger UI | Swagger UI |
+| Testy | JUnit 5 | pytest | Jest |
 
-## Testy
+**Funkcjonalności:**
+- Baza: `Meal` (nazwa, makroskładniki, kalorie), `DailyLog` (data, mealId, userId), `UserProfile` (waga, wzrost, wiek, płeć)
+- UI: Widok dodawania posiłków do wybranego dnia, modyfikacja parametrów wagi/wzrostu i estetyczny pasek postępu kalorii.
+- Algorytm (funkcyjny): Obliczanie dziennego zapotrzebowania BMR (równanie Harrisa-Benedicta) oraz procentowa realizacja celu kalorycznego.
+- REST: `GET /api/diet/logs/summary` pobiera podsumowanie kalorii i makroskładników na wybrany dzień.
+- Security: Użytkownik (`USER`) widzi wyłącznie swój profil oraz swój dziennik posiłków.
 
-```bash
-# Java
-cd e-learning-platform/java
-mvn test
+---
 
-# Python
-cd e-learning-platform/python
-pytest
+## Porty aplikacji i Swagger UI
 
-# NodeJS
-cd e-learning-platform/nodejs
-npm test
-```
+Każda aplikacja uruchamia się na dedykowanym porcie, co pozwala na ich równoległe testowanie.
+
+| Projekt | Język | Port | Swagger UI URL |
+|---------|-------|------|----------------|
+| **e-learning-platform** | Java | `8080` | `http://localhost:8080/swagger-ui/index.html` |
+| | Python | `8000` | `http://localhost:8000/docs` |
+| | NodeJS | `3000` | `http://localhost:3000/api-docs` |
+| **fitness-registration** | Java | `8081` | `http://localhost:8081/swagger-ui/index.html` |
+| | Python | `8001` | `http://localhost:8001/docs` |
+| | NodeJS | `3001` | `http://localhost:3001/api-docs` |
+| **restaurant-management** | Java | `8082` | `http://localhost:8082/swagger-ui/index.html` |
+| | Python | `8002` | `http://localhost:8002/docs` |
+| | NodeJS | `3002` | `http://localhost:3002/api-docs` |
+| **diet-tracker** | Java | `8083` | `http://localhost:8083/swagger-ui/index.html` |
+| | Python | `8003` | `http://localhost:8003/docs` |
+| | NodeJS | `3003` | `http://localhost:3003/api-docs` |
+
+---
 
 ## Dane logowania
 
 ### e-learning-platform
-| Użytkownik | Hasło | Rola |
-|-----------|-------|------|
-| student1 | pass | STUDENT |
-| teacher1 | pass | TEACHER |
+- Student: `student1` / `pass`
+- Nauczyciel: `teacher1` / `pass`
 
-### fitness-registration
-| Użytkownik | Hasło | Rola |
-|-----------|-------|------|
-| user1 | pass | USER |
-| user2 | pass | USER |
+### fitness-registration & diet-tracker
+- Użytkownik 1: `user1` / `pass`
+- Użytkownik 2: `user2` / `pass`
 
-## Swagger UI / Dokumentacja API
+### restaurant-management
+- Gość 1: `guest1` / `pass`
+- Gość 2: `guest2` / `pass`
+- Kelner 1: `waiter1` / `pass`
 
-### Java (Spring Boot)
-- e-learning: `http://localhost:8080/swagger-ui/index.html` (lub `/swagger-ui.html`)
-- fitness: `http://localhost:8081/swagger-ui/index.html` (lub `/swagger-ui.html`)
+---
 
-### Python (FastAPI)
-- e-learning: `http://localhost:8000/docs`
-- fitness: `http://localhost:8000/docs`
+## Uruchamianie projektów
+
+### Java (Maven)
+Przejdź do folderu wybranego projektu i uruchom:
+```bash
+mvn spring-boot:run
+```
+
+### Python (uvicorn)
+Przejdź do folderu projektu, zainstaluj zależności i uruchom:
+```bash
+pip install -r requirements.txt
+uvicorn app:app --reload --port <PORT>
+```
 
 ### NodeJS (Express)
-- e-learning: `http://localhost:3000/api-docs`
-- fitness: `http://localhost:3001/api-docs`
+Przejdź do folderu projektu, zainstaluj zależności i uruchom:
+```bash
+npm install
+npm start
+```
+
+---
+
+## Testowanie (Uruchamianie testów jednostkowych)
+
+### Java
+```bash
+mvn test
+```
+
+### Python
+```bash
+pytest
+```
+
+### NodeJS
+```bash
+npm test
+```

@@ -1,0 +1,5 @@
+{
+  "dialect": "sqlite",
+  "storage": "./diet.sqlite",
+  "logging": false
+}

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Kalkulator Kalorii - Aplikacja Dietetyczna</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(22, 30, 49, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+            --success-color: #10b981;
+            --fail-color: #ef4444;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 35px;
+            width: 100%;
+            max-width: 850px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 25px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+        }
+        .user-info {
+            text-align: right;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+        }
+        .card h3 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            font-size: 16px;
+            color: #fff;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 12px;
+        }
+        .form-group label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        input, select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+        input:focus, select:focus {
+            border-color: rgba(99, 102, 241, 0.5);
+        }
+        .btn {
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+        }
+        /* Pasek postępu kalorii */
+        .progress-container {
+            margin-bottom: 25px;
+        }
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .progress-bar {
+            height: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        /* Makroskładniki */
+        .macros-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            text-align: center;
+        }
+        .macro-item {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .macro-val {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .macro-lbl {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 15px;
+        }
+        th {
+            background: rgba(255, 255, 255, 0.03);
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 14px;
+            color: #fff;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13px;
+        }
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            color: var(--text-secondary);
+            font-size: 13px;
+        }
+        tr:hover td {
+            background: rgba(255, 255, 255, 0.01);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-info">
+            Zalogowany jako: <strong style="color: #fff;">{{ user }}</strong>
+        </div>
+        
+        <h1>Kalkulator Zapotrzebowania Kalorycznego</h1>
+
+        <!-- Wykres i statystyki -->
+        <div class="card" style="margin-bottom: 30px;">
+            <h3>Podsumowanie dnia ({{ date }})</h3>
+            
+            <div class="progress-container">
+                <div class="progress-labels">
+                    <span>Spożyto: <strong style="color: #a5b4fc;">{{ "%.1f"|format(summary.calories) }} kcal</strong></span>
+                    <span>Cel (BMR): <strong>{{ "%.1f"|format(summary.bmr) }} kcal</strong></span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: {{ [100, summary.percentage]|min }}%"></div>
+                </div>
+                <div style="text-align: right; font-size: 12px; color: var(--text-secondary); margin-top: 4px;">
+                    Stopień realizacji: {{ "%.1f"|format(summary.percentage) }}%
+                </div>
+            </div>
+
+            <div class="macros-grid">
+                <div class="macro-item">
+                    <div class="macro-val" style="color: #fca5a5;">{{ "%.1f"|format(summary.proteins) }}g</div>
+                    <div class="macro-lbl">Białko</div>
+                </div>
+                <div class="macro-item">
+                    <div class="macro-val" style="color: #fde047;">{{ "%.1f"|format(summary.carbs) }}g</div>
+                    <div class="macro-lbl">Węglowodany</div>
+                </div>
+                <div class="macro-item">
+                    <div class="macro-val" style="color: #86efac;">{{ "%.1f"|format(summary.fats) }}g</div>
+                    <div class="macro-lbl">Tłuszcze</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Profil użytkownika (zapotrzebowanie BMR) -->
+            <div class="card">
+                <h3>Ustawienia profilu (Harris-Benedict BMR)</h3>
+                <form action="/diet/profile/update" method="post">
+                    <input type="hidden" name="date" value="{{ date }}">
+                    <div class="form-group">
+                        <label for="weight">Waga (kg)</label>
+                        <input type="number" step="0.1" id="weight" name="weight" value="{{ profile.weight }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="height">Wzrost (cm)</label>
+                        <input type="number" step="0.1" id="height" name="height" value="{{ profile.height }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Wiek (lata)</label>
+                        <input type="number" id="age" name="age" value="{{ profile.age }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Płeć</label>
+                        <select id="gender" name="gender">
+                            <option value="M" {% if profile.gender == 'M' %}selected{% endif %}>Mężczyzna</option>
+                            <option value="F" {% if profile.gender == 'F' %}selected{% endif %}>Kobieta</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%;">Aktualizuj profil</button>
+                </form>
+            </div>
+
+            <!-- Dodawanie posiłków -->
+            <div class="card">
+                <h3>Dodaj posiłek do dziennika</h3>
+                <form action="/diet/meal/add" method="post">
+                    <input type="hidden" name="date" value="{{ date }}">
+                    <div class="form-group">
+                        <label for="mealId">Wybierz posiłek</label>
+                        <select id="mealId" name="meal_id" required>
+                            {% for m in meals %}
+                            <option value="{{ m.id }}">{{ m.name }} ({{ m.calories }} kcal)</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 10px;">Dodaj do dziennika</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Lista spożytych posiłków -->
+        <h3 style="color: #fff; margin-bottom: 10px;">Posiłki spożyte w tym dniu</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nazwa posiłku</th>
+                    <th>Białko</th>
+                    <th>Węglowodany</th>
+                    <th>Tłuszcze</th>
+                    <th>Kalorie</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in loggedMeals %}
+                <tr>
+                    <td style="font-weight: 600; color: #fff;">{{ m.name }}</td>
+                    <td>{{ m.proteins }} g</td>
+                    <td>{{ m.carbs }} g</td>
+                    <td>{{ m.fats }} g</td>
+                    <td style="font-weight: 600; color: #a5b4fc;">{{ m.calories }} kcal</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
