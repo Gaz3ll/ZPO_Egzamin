@@ -171,7 +171,7 @@
 **Funkcjonalności:**
 - Baza: `Question` (treść, poprawna odpowiedź, punkty, opcje A-D), `QuizResult` (userId, score, percentage, passed)
 - UI: rozwiązywanie quizu (formularz z radio buttonami), podsumowanie z wynikiem
-- Algorytm: +1 za poprawną, -0.5 za złą, 0 za brak; próg zaliczenia >50%
+- Algorytm: zaimplementowany w paradygmacie funkcyjnym (brak tradycyjnych pętli i instrukcji warunkowych `if`; użycie Stream API, lambda, `.map()`, `.filter()`, `.reduce()` oraz wyrażeń trójargumentowych). Punktacja: +1 za poprawną, -0.5 za złą, 0 za brak; próg zaliczenia >50%
 - REST: `POST /api/quiz/submit` przyjmuje odpowiedzi, zwraca procentowy wynik
 - Security: tylko STUDENT może wysyłać odpowiedzi, TEACHER widzi wyniki wszystkich
 - Test: 8 przypadków testowych kalkulatora punktacji
@@ -191,7 +191,7 @@
 **Funkcjonalności:**
 - Baza: `FitnessClass` (typ, dzień, godzina, max pojemność), `Registration` (userId, classId, status: MAIN/WAITING, position)
 - UI: lista zajęć w tygodniu z przyciskami "Register" / "Unregister"
-- Algorytm: max 20 osób na liście głównej, 21. trafia na rezerwę z pozycją; wypisanie się wciąga pierwszeństwo z rezerwy
+- Algorytm: zaimplementowany w paradygmacie funkcyjnym (brak tradycyjnych pętli i instrukcji warunkowych `if`; użycie Stream API, lambda, `.map()`, `.filter()`, `.reduce()` oraz wyrażeń trójargumentowych). Zarządzanie kolejką: max 20 osób na liście głównej, 21. trafia na rezerwę z pozycją; wypisanie się kogoś z listy głównej "wciąga" pierwszą osobę z rezerwy
 - REST: `POST /api/fitness/unregister/{classId}` uruchamia logikę kolejkowania
 - Security: tylko USER może się zapisywać/wypisywać
 - Test: przejście z listy rezerwowej na główną po zwolnieniu miejsca
