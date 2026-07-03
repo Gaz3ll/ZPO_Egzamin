@@ -11,7 +11,6 @@ Wszystkie algorytmy biznesowe (ocenianie quizów, listy rezerwowe fitness, dobó
 Poniżej znajduje się kompletny schemat struktury plików w repozytorium (wszystkie nazwy plików są bezpośrednimi odnośnikami do ich lokalizacji):
 
 ```
-c:/Users/wikto/ZPO_Egzamin/
 ├── e-learning-platform/
 │   ├── java/
 │   │   ├── pom.xml (link: [pom.xml](file:///c:/Users/wikto/ZPO_Egzamin/e-learning-platform/java/pom.xml))
