@@ -22,7 +22,7 @@ public class RestaurantController {
 
     @GetMapping
     public String showRestaurant(Authentication auth, Model model) {
-        boolean isWaiter = auth.getName().equals("waiter1");
+        boolean isWaiter = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_WAITER"));
         List<Reservation> reservations = isWaiter 
             ? restaurantService.getAllReservations() 
             : restaurantService.getReservationsByUser(auth.getName());
@@ -40,7 +40,7 @@ public class RestaurantController {
     @PostMapping("/search")
     public String searchTable(Authentication auth, @RequestParam String time, @RequestParam int guestsCount, Model model) {
         RestaurantTable optimalTable = restaurantService.findOptimalTable(guestsCount, time);
-        boolean isWaiter = auth.getName().equals("waiter1");
+        boolean isWaiter = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_WAITER"));
         List<Reservation> reservations = isWaiter 
             ? restaurantService.getAllReservations() 
             : restaurantService.getReservationsByUser(auth.getName());

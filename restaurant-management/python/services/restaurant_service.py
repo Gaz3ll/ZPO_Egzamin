@@ -28,13 +28,14 @@ def book_table(user_id: str, table_id: int, time: str, guests_count: int) -> str
     db = SessionLocal()
     try:
         table = db.query(Table).filter(Table.id == table_id).first()
-        existing = db.query(Reservation).filter(Reservation.table_id == table_id, Reservation.time == time).first()
+        existing_table = db.query(Reservation).filter(Reservation.table_id == table_id, Reservation.time == time).first()
+        existing_user = db.query(Reservation).filter(Reservation.user_id == user_id, Reservation.time == time).first()
         
-        # Zagnieżdżone wyrażenie trójargumentowe zamiast if-ów
         return "Table not found" if not table else \
-               ("Table already reserved" if existing else \
-                ("Not enough seats" if table.seats < guests_count else \
-                 _create_booking(db, user_id, table_id, time, guests_count)))
+               ("Table already reserved" if existing_table else \
+                ("User already has a reservation at this time" if existing_user else \
+                 ("Not enough seats" if table.seats < guests_count else \
+                  _create_booking(db, user_id, table_id, time, guests_count))))
     finally:
         db.close()
 

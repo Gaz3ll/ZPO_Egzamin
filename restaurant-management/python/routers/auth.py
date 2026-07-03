@@ -13,6 +13,7 @@ USERS = {
     "guest1": {"password_hash": hash_password("pass"), "role": "GUEST"},
     "guest2": {"password_hash": hash_password("pass"), "role": "GUEST"},
     "waiter1": {"password_hash": hash_password("pass"), "role": "WAITER"},
+    "waiter2": {"password_hash": hash_password("pass"), "role": "WAITER"},
 }
 
 

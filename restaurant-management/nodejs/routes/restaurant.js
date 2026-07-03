@@ -2,11 +2,11 @@ const express = require('express');
 const router = express.Router();
 const { Table, Reservation } = require('../models');
 const { findOptimalTable, bookTable } = require('../services/restaurantService');
-const { auth, requireRole } = require('../middleware/auth');
+const { auth, requireRole, ROLES } = require('../middleware/auth');
 
 // Widok panelu rezerwacji dla gościa i kelnera
 router.get('/restaurant', auth, async (req, res) => {
-  const isWaiter = req.auth.user === 'waiter1'; // Kelner widzi wszystkie rezerwacje
+  const isWaiter = ROLES[req.auth.user] === 'WAITER'; // Sprawdzanie po roli zamiast po imieniu
   const reservations = isWaiter 
     ? await Reservation.findAll() 
     : await Reservation.findAll({ where: { userId: req.auth.user } });
@@ -28,7 +28,7 @@ router.post('/restaurant/search', auth, async (req, res) => {
   const guestsCount = parseInt(req.body.guestsCount) || 0;
   
   const optimalTable = await findOptimalTable(guestsCount, time);
-  const isWaiter = req.auth.user === 'waiter1';
+  const isWaiter = ROLES[req.auth.user] === 'WAITER';
   const reservations = isWaiter 
     ? await Reservation.findAll() 
     : await Reservation.findAll({ where: { userId: req.auth.user } });

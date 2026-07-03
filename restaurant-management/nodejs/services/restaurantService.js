@@ -23,16 +23,18 @@ async function findOptimalTable(guestsCount, time) {
  */
 async function bookTable(userId, tableId, time, guestsCount) {
   const table = await Table.findByPk(tableId);
-  const existing = await Reservation.findOne({ where: { tableId, time } });
+  const existingTable = await Reservation.findOne({ where: { tableId, time } });
+  const existingUser = await Reservation.findOne({ where: { userId, time } });
 
-  // Wyrażenia trójargumentowe z instrukcją przecinkową dla operacji zapisu bazy danych
   return !table 
     ? 'Table not found'
-    : existing 
+    : existingTable 
       ? 'Table already reserved'
-      : table.seats < guestsCount 
-        ? 'Not enough seats'
-        : (await Reservation.create({ tableId, time, guestsCount, userId }), 'Reservation successful');
+      : existingUser
+        ? 'User already has a reservation at this time'
+        : table.seats < guestsCount 
+          ? 'Not enough seats'
+          : (await Reservation.create({ tableId, time, guestsCount, userId }), 'Reservation successful');
 }
 
 module.exports = { findOptimalTable, bookTable };

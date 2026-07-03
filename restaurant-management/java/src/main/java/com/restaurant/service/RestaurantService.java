@@ -59,10 +59,12 @@ public class RestaurantService {
     public String bookTable(String userId, Long tableId, String time, int guestsCount) {
         return tableRepository.findById(tableId)
             .map(table -> reservationRepository.findByTableIdAndTime(tableId, time)
-                .map(existing -> "Table already reserved")
-                .orElseGet(() -> table.getSeats() < guestsCount 
-                    ? "Not enough seats" 
-                    : saveAndReturn(new Reservation(tableId, time, guestsCount, userId), "Reservation successful"))
+                .map(existingTable -> "Table already reserved")
+                .orElseGet(() -> reservationRepository.findByUserIdAndTime(userId, time)
+                    .map(existingUser -> "User already has a reservation at this time")
+                    .orElseGet(() -> table.getSeats() < guestsCount 
+                        ? "Not enough seats" 
+                        : saveAndReturn(new Reservation(tableId, time, guestsCount, userId), "Reservation successful")))
             ).orElse("Table not found");
     }
 

@@ -54,3 +54,11 @@ test('powinien poprawnie zarezerwować stolik oraz odrzucić rezerwację na zaj�
   const result2 = await bookTable('guest2', 1, '20:00', 2);
   expect(result2).toBe('Table already reserved');
 });
+
+test('powinien zabronić użytkownikowi dokonania dwóch rezerwacji o tej samej godzinie', async () => {
+  const result1 = await bookTable('guest1', 1, '20:00', 2);
+  expect(result1).toBe('Reservation successful');
+
+  const result2 = await bookTable('guest1', 2, '20:00', 4);
+  expect(result2).toBe('User already has a reservation at this time');
+});

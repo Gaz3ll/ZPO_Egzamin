@@ -61,3 +61,13 @@ def test_book_table_prevent_duplicates():
     # Druga na ten sam czas i stolik powinna zostać odrzucona
     res2 = book_table("guest2", 1, "20:00", 2)
     assert res2 == "Table already reserved"
+
+
+def test_book_table_prevent_user_duplicates():
+    # Pierwsza rezerwacja powinna przejść
+    res1 = book_table("guest1", 1, "21:00", 2)
+    assert res1 == "Reservation successful"
+
+    # Druga rezerwacja tego samego użytkownika o tej samej godzinie powinna być odrzucona
+    res2 = book_table("guest1", 2, "21:00", 4)
+    assert res2 == "User already has a reservation at this time"

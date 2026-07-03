@@ -99,6 +99,7 @@ Wszystkie algorytmy biznesowe (ocenianie quizów, listy rezerwowe fitness, dobó
 - Gość 1: `guest1` / `pass`
 - Gość 2: `guest2` / `pass`
 - Kelner 1: `waiter1` / `pass`
+- Kelner 2: `waiter2` / `pass`
 - H2 Console Admin (Java): `admin` / `admin` (Rola: ADMIN)
 
 ---

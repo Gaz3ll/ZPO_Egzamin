@@ -84,4 +84,19 @@ public class RestaurantServiceTest {
         String result2 = restaurantService.bookTable("guest2", tId, "20:00", 2);
         assertEquals("Table already reserved", result2);
     }
+
+    @Test
+    public void testBookTablePreventUserDuplicates() {
+        List<RestaurantTable> tables = tableRepository.findAll();
+        Long tId1 = tables.get(0).getId();
+        Long tId2 = tables.get(1).getId();
+
+        // Pierwsza rezerwacja przechodzi
+        String result1 = restaurantService.bookTable("guest1", tId1, "20:00", 2);
+        assertEquals("Reservation successful", result1);
+
+        // Druga rezerwacja tego samego użytkownika o tej samej godzinie zostaje odrzucona
+        String result2 = restaurantService.bookTable("guest1", tId2, "20:00", 4);
+        assertEquals("User already has a reservation at this time", result2);
+    }
 }

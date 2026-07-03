@@ -48,6 +48,7 @@ public class SecurityConfig {
         manager.createUser(User.withUsername("guest1").password(encoder.encode("pass")).roles("GUEST").build());
         manager.createUser(User.withUsername("guest2").password(encoder.encode("pass")).roles("GUEST").build());
         manager.createUser(User.withUsername("waiter1").password(encoder.encode("pass")).roles("WAITER").build());
+        manager.createUser(User.withUsername("waiter2").password(encoder.encode("pass")).roles("WAITER").build());
         manager.createUser(User.withUsername("admin").password(encoder.encode("admin")).roles("ADMIN").build());
         return manager;
     }

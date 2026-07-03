@@ -4,7 +4,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from models import SessionLocal, Table, Reservation
 from services.restaurant_service import find_optimal_table, book_table
-from routers.auth import get_current_user, require_role
+from routers.auth import get_current_user, require_role, USERS
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -20,7 +20,7 @@ def get_db():
 
 @router.get("/restaurant", response_class=HTMLResponse)
 def show_restaurant(request: Request, db: Session = Depends(get_db), user: str = Depends(get_current_user)):
-    is_waiter = (user == "waiter1")
+    is_waiter = (USERS.get(user, {}).get("role") == "WAITER")
     reservations = db.query(Reservation).all() if is_waiter else db.query(Reservation).filter(Reservation.user_id == user).all()
     return templates.TemplateResponse("restaurant.html", {
         "request": request,
@@ -37,7 +37,7 @@ def show_restaurant(request: Request, db: Session = Depends(get_db), user: str =
 @router.post("/restaurant/search", response_class=HTMLResponse)
 def search_table(request: Request, time: str = Form(...), guests_count: int = Form(...), db: Session = Depends(get_db), user: str = Depends(get_current_user)):
     optimal_table = find_optimal_table(guests_count, time)
-    is_waiter = (user == "waiter1")
+    is_waiter = (USERS.get(user, {}).get("role") == "WAITER")
     reservations = db.query(Reservation).all() if is_waiter else db.query(Reservation).filter(Reservation.user_id == user).all()
     msg = None if optimal_table else "Brak wolnych stolików o podanej godzinie dla tylu osób."
     return templates.TemplateResponse("restaurant.html", {

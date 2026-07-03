@@ -7,12 +7,14 @@ const HASHED_USERS = {
   guest1: hashPassword('pass'),
   guest2: hashPassword('pass'),
   waiter1: hashPassword('pass'),
+  waiter2: hashPassword('pass'),
 };
 
 const ROLES = {
   guest1: 'GUEST',
   guest2: 'GUEST',
   waiter1: 'WAITER',
+  waiter2: 'WAITER',
 };
 
 const auth = basicAuth({
