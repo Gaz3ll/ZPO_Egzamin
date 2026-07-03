@@ -13,8 +13,21 @@ const ROLES = {
   teacher1: 'TEACHER',
 };
 
+const safeCompare = (a, b) => {
+  const bufA = Buffer.from(a, 'hex');
+  const bufB = Buffer.from(b, 'hex');
+  return bufA.length === bufB.length && crypto.timingSafeEqual(bufA, bufB);
+};
+
 const auth = basicAuth({
-  authorizer: (username, password) => HASHED_USERS[username] === hashPassword(password),
+  authorizer: (username, password, cb) => {
+    const expectedHash = HASHED_USERS[username];
+    const actualHash = hashPassword(password);
+    return expectedHash
+      ? cb(null, safeCompare(expectedHash, actualHash))
+      : cb(null, false);
+  },
+  authorizeAsync: true,
   challenge: true,
   unauthorizedResponse: { error: 'Unauthorized' },
 });
@@ -22,8 +35,8 @@ const auth = basicAuth({
 function requireRole(role) {
   return (req, res, next) => {
     const userRole = ROLES[req.auth.user];
-    return userRole === role 
-      ? next() 
+    return userRole === role
+      ? next()
       : res.status(403).json({ error: 'Forbidden' });
   };
 }

@@ -1,4 +1,5 @@
 import hashlib
+import secrets
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
@@ -18,8 +19,16 @@ USERS = {
 
 
 def verify_user(credentials: HTTPBasicCredentials) -> str:
+    """
+    Weryfikuje dane logowania użytkownika.
+    Używa secrets.compare_digest zamiast == dla bezpiecznego porównywania (timing-safe).
+    """
     user = USERS.get(credentials.username)
-    return credentials.username if user and user["password_hash"] == hash_password(credentials.password) else _unauthorized()
+    password_ok = (
+        user is not None and
+        secrets.compare_digest(user["password_hash"], hash_password(credentials.password))
+    )
+    return credentials.username if password_ok else _unauthorized()
 
 
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)) -> str:
@@ -35,8 +44,15 @@ def require_role(role: str):
 
 
 def _unauthorized():
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Invalid credentials",
+        headers={"WWW-Authenticate": "Basic"},
+    )
 
 
 def _forbidden():
-    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access forbidden for this role")
+    raise HTTPException(
+        status_code=status.HTTP_403_FORBIDDEN,
+        detail="Access forbidden for this role",
+    )
