@@ -29,15 +29,10 @@ def show_quiz(request: Request, db: Session = Depends(get_db), user: str = Depen
 async def submit_quiz(request: Request, db: Session = Depends(get_db), user: str = Depends(require_student)):
     form = await request.form()
     questions = db.query(Question).all()
-    correct = wrong = 0
-    for q in questions:
-        answer = form.get(str(q.id))
-        if not answer:
-            continue
-        if answer == q.correct_answer:
-            correct += 1
-        else:
-            wrong += 1
+    form_dict = dict(form)
+    answered = list(filter(lambda q: str(q.id) in form_dict and form_dict[str(q.id)], questions))
+    correct = sum(map(lambda q: int(form_dict[str(q.id)] == q.correct_answer), answered))
+    wrong = len(answered) - correct
     score = calculate_score(len(questions), correct, wrong)
     percentage = calculate_percentage(score, len(questions))
     passed = is_passed(percentage)
@@ -51,15 +46,10 @@ async def submit_quiz(request: Request, db: Session = Depends(get_db), user: str
 @router.post("/api/quiz/submit")
 def api_submit_answers(req: QuizSubmitRequest, db: Session = Depends(get_db), user: str = Depends(require_student)):
     questions = db.query(Question).all()
-    correct = wrong = 0
-    for q in questions:
-        answer = req.answers.get(str(q.id))
-        if not answer:
-            continue
-        if answer == q.correct_answer:
-            correct += 1
-        else:
-            wrong += 1
+    answers_dict = req.answers or {}
+    answered = list(filter(lambda q: str(q.id) in answers_dict and answers_dict[str(q.id)], questions))
+    correct = sum(map(lambda q: int(answers_dict[str(q.id)] == q.correct_answer), answered))
+    wrong = len(answered) - correct
     score = calculate_score(len(questions), correct, wrong)
     percentage = calculate_percentage(score, len(questions))
     passed = is_passed(percentage)

@@ -11,13 +11,10 @@ router.get('/quiz', auth, requireRole('STUDENT'), async (req, res) => {
 
 router.post('/quiz/submit', auth, requireRole('STUDENT'), async (req, res) => {
   const questions = await Question.findAll();
-  let correct = 0, wrong = 0;
-  for (const q of questions) {
-    const answer = req.body[String(q.id)];
-    if (!answer) continue;
-    if (String(answer).trim() === q.correctAnswer) correct++;
-    else wrong++;
-  }
+  const answers = req.body || {};
+  const answered = questions.filter(q => answers[q.id]);
+  const correct = answered.filter(q => String(answers[q.id]).trim() === q.correctAnswer).length;
+  const wrong = answered.length - correct;
   const score = calculateScore(questions.length, correct, wrong);
   const percentage = calculatePercentage(score, questions.length);
   const passed = isPassed(percentage);
@@ -70,13 +67,10 @@ router.post('/quiz/submit', auth, requireRole('STUDENT'), async (req, res) => {
  */
 router.post('/api/quiz/submit', auth, requireRole('STUDENT'), async (req, res) => {
   const questions = await Question.findAll();
-  let correct = 0, wrong = 0;
-  for (const q of questions) {
-    const answer = req.body.answers ? req.body.answers[String(q.id)] : null;
-    if (!answer) continue;
-    if (String(answer).trim() === q.correctAnswer) correct++;
-    else wrong++;
-  }
+  const answers = req.body.answers || {};
+  const answered = questions.filter(q => answers[q.id]);
+  const correct = answered.filter(q => String(answers[q.id]).trim() === q.correctAnswer).length;
+  const wrong = answered.length - correct;
   const score = calculateScore(questions.length, correct, wrong);
   const percentage = calculatePercentage(score, questions.length);
   const passed = isPassed(percentage);

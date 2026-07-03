@@ -1,57 +1,41 @@
 const { FitnessClass, Registration } = require('../models');
 
 /**
- * Zapisuje użytkownika na zajęcia fitness.
- * Sprawdza pojemność zajęć i decyduje, czy zapisać na listę główną (MAIN) czy rezerwową (WAITING).
+ * Zapisuje użytkownika na zajęcia fitness (podejście funkcyjne).
  */
 async function register(userId, classId) {
   const fitnessClass = await FitnessClass.findByPk(classId);
-  if (!fitnessClass) return 'Class not found';
-
-  // Sprawdzenie czy użytkownik już jest zarejestrowany
   const existing = await Registration.findOne({ where: { userId, classId } });
-  if (existing) return 'Already registered';
-
-  // Pobranie liczby osób na liście głównej
   const mainCount = await Registration.count({ where: { classId, status: 'MAIN' } });
+  const waitingCount = await Registration.count({ where: { classId, status: 'WAITING' } });
 
-  if (mainCount < fitnessClass.maxCapacity) {
-    // Rejestracja na liście głównej
-    await Registration.create({ userId, classId, status: 'MAIN', position: null });
-    return 'Registered on main list';
-  } else {
-    // Rejestracja na liście rezerwowej (pozycja = obecna liczba oczekujących + 1)
-    const waitingCount = await Registration.count({ where: { classId, status: 'WAITING' } });
-    await Registration.create({ userId, classId, status: 'WAITING', position: waitingCount + 1 });
-    return `Registered on waiting list, position ${waitingCount + 1}`;
-  }
+  // Brak if-ów - używamy wyrażenia warunkowego trójargumentowego do walidacji i rejestracji
+  return !fitnessClass 
+    ? 'Class not found'
+    : existing 
+      ? 'Already registered'
+      : mainCount < fitnessClass.maxCapacity 
+        ? (await Registration.create({ userId, classId, status: 'MAIN', position: null }), 'Registered on main list')
+        : (await Registration.create({ userId, classId, status: 'WAITING', position: waitingCount + 1 }), `Registered on waiting list, position ${waitingCount + 1}`);
 }
 
 /**
- * Wypisuje użytkownika z zajęć.
- * Jeśli użytkownik był na liście głównej, następuje promocja pierwszej osoby z listy rezerwowej.
- * Jeśli był na liście rezerwowej, pozostałe pozycje w kolejce są aktualizowane.
+ * Wypisuje użytkownika z zajęć (podejście funkcyjne).
  */
 async function unregister(userId, classId) {
   const reg = await Registration.findOne({ where: { userId, classId } });
-  if (!reg) return 'Registration not found';
-
-  const wasMain = reg.status === 'MAIN';
-  await reg.destroy();
-
-  if (wasMain) {
-    // Promocja osoby z listy rezerwowej
-    await promoteFromWaiting(classId);
-    return 'Unregistered from main list';
-  } else {
-    // Przenumerowanie pozycji w kolejce
-    await reorderWaiting(classId);
-    return 'Unregistered from waiting list';
-  }
+  
+  // Brak if-ów - używamy zagnieżdżonego wyrażenia trójargumentowego z operatorem przecinkowym dla operacji bazodanowych
+  return !reg 
+    ? 'Registration not found'
+    : (await reg.destroy(), 
+       reg.status === 'MAIN' 
+         ? (await promoteFromWaiting(classId), 'Unregistered from main list')
+         : (await reorderWaiting(classId), 'Unregistered from waiting list'));
 }
 
 /**
- * Promuje pierwszą osobę z kolejki oczekujących na listę główną.
+ * Promuje pierwszą osobę z kolejki oczekujących (podejście funkcyjne).
  */
 async function promoteFromWaiting(classId) {
   const waiting = await Registration.findAll({
@@ -59,18 +43,19 @@ async function promoteFromWaiting(classId) {
     order: [['position', 'ASC']],
   });
 
-  if (waiting.length > 0) {
-    const promoted = waiting[0];
+  const promote = async (promoted) => {
     promoted.status = 'MAIN';
-    promoted.position = null; // Zapis na listę główną usuwa pozycję w kolejce
+    promoted.position = null;
     await promoted.save();
-    // Ponowne uporządkowanie pozostałej listy rezerwowej
     await reorderWaiting(classId);
-  }
+  };
+
+  // Użycie operatora logicznego && zamiast tradycyjnego if
+  waiting.length > 0 && await promote(waiting[0]);
 }
 
 /**
- * Utrzymuje spójność pozycji w kolejce oczekujących (1..N).
+ * Przenumerowuje pozycje w kolejce rezerwowej (podejście funkcyjne bez pętli for).
  */
 async function reorderWaiting(classId) {
   const waiting = await Registration.findAll({
@@ -78,10 +63,11 @@ async function reorderWaiting(classId) {
     order: [['position', 'ASC']],
   });
 
-  for (let i = 0; i < waiting.length; i++) {
-    waiting[i].position = i + 1;
-    await waiting[i].save();
-  }
+  // Brak pętli - używamy map i Promise.all dla asynchronicznego zapisu w stylu funkcyjnym
+  await Promise.all(waiting.map((reg, index) => {
+    reg.position = index + 1;
+    return reg.save();
+  }));
 }
 
 module.exports = { register, unregister };

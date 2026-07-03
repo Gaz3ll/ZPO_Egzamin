@@ -29,14 +29,15 @@ public class QuizService {
 
     public QuizResultResponse submitAnswers(String userId, QuizSubmitRequest request) {
         List<Question> questions = questionRepository.findAll();
-        int correct = 0, wrong = 0;
+        List<Question> answered = questions.stream()
+            .filter(q -> request.getAnswers().get(q.getId().toString()) != null && !request.getAnswers().get(q.getId().toString()).isEmpty())
+            .toList();
 
-        for (Question q : questions) {
-            String answer = request.getAnswers().get(q.getId().toString());
-            if (answer == null || answer.isEmpty()) continue;
-            if (answer.equals(q.getCorrectAnswer())) correct++;
-            else wrong++;
-        }
+        int correct = (int) answered.stream()
+            .filter(q -> request.getAnswers().get(q.getId().toString()).equals(q.getCorrectAnswer()))
+            .count();
+
+        int wrong = answered.size() - correct;
 
         double score = scoreCalculator.calculateScore(questions.size(), correct, wrong);
         double percentage = scoreCalculator.calculatePercentage(score, questions.size());
