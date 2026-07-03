@@ -1,11 +1,8 @@
 # ZPO_Egzamin
 
-ZPO_Egzamine
-├── e-learning-platform/
-│   ├── java/     (Spring Boot + JPA + Thymeleaf + Security + Swagger)
-│   ├── python/   (FastAPI + SQLAlchemy + Jinja2 + Basic Auth)
-│   └── nodejs/   (Express + Sequelize + EJS + Basic Auth)
-└── fitness-registration/
-    ├── java/     (Spring Boot + JPA + Thymeleaf + Security + Swagger)
-    ├── python/   (FastAPI + SQLAlchemy + Jinja2 + Basic Auth)
-    └── nodejs/   (Express + Sequelize + EJS + Basic Auth)
+
+
+Java: mvn spring-boot:run (port 8080 / 8081)
+Python: uvicorn app:app (port 8000)
+NodeJS: node server.js (port 3000 / 3001)
+Testy: mvn test / pytest / jest
