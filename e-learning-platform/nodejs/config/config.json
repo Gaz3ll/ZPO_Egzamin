@@ -1,0 +1,5 @@
+{
+  "dialect": "sqlite",
+  "storage": "./elearning.sqlite",
+  "logging": false
+}

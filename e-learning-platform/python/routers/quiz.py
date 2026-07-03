@@ -1,0 +1,70 @@
+from fastapi import APIRouter, Depends, Request, Form
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from sqlalchemy.orm import Session
+from typing import Dict
+from models import SessionLocal, Question, QuizResult
+from schemas import QuizSubmitRequest, QuizResultResponse
+from services.score_calculator import calculate_score, calculate_percentage, is_passed
+from routers.auth import get_current_user
+
+router = APIRouter()
+templates = Jinja2Templates(directory="templates")
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+@router.get("/quiz", response_class=HTMLResponse)
+def show_quiz(request: Request, db: Session = Depends(get_db), user: str = Depends(get_current_user)):
+    questions = db.query(Question).all()
+    return templates.TemplateResponse("quiz.html", {"request": request, "questions": questions})
+
+
+@router.post("/quiz/submit", response_class=HTMLResponse)
+def submit_quiz(request: Request, db: Session = Depends(get_db), user: str = Depends(get_current_user)):
+    form = request.query_params
+    questions = db.query(Question).all()
+    correct = wrong = 0
+    for q in questions:
+        answer = form.get(str(q.id))
+        if not answer:
+            continue
+        if answer == q.correct_answer:
+            correct += 1
+        else:
+            wrong += 1
+    score = calculate_score(len(questions), correct, wrong)
+    percentage = calculate_percentage(score, len(questions))
+    passed = is_passed(percentage)
+    result = QuizResult(user_id=user, score=score, percentage=percentage, passed=passed)
+    db.add(result)
+    db.commit()
+    resp = QuizResultResponse(score=score, percentage=percentage, passed=passed, correct=correct, wrong=wrong, total=len(questions))
+    return templates.TemplateResponse("summary.html", {"request": request, "result": resp})
+
+
+@router.post("/api/quiz/submit")
+def api_submit_answers(req: QuizSubmitRequest, db: Session = Depends(get_db), user: str = Depends(get_current_user)):
+    questions = db.query(Question).all()
+    correct = wrong = 0
+    for q in questions:
+        answer = req.answers.get(str(q.id))
+        if not answer:
+            continue
+        if answer == q.correct_answer:
+            correct += 1
+        else:
+            wrong += 1
+    score = calculate_score(len(questions), correct, wrong)
+    percentage = calculate_percentage(score, len(questions))
+    passed = is_passed(percentage)
+    result = QuizResult(user_id=user, score=score, percentage=percentage, passed=passed)
+    db.add(result)
+    db.commit()
+    return QuizResultResponse(score=score, percentage=percentage, passed=passed, correct=correct, wrong=wrong, total=len(questions))

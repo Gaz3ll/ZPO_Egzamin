@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Fitness Classes</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f2f2f2; }
+        .btn { padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 14px; }
+        .btn-register { background: #4CAF50; }
+        .btn-unregister { background: #f44336; }
+        .btn:hover { opacity: 0.8; }
+        .message { background: #e7f3fe; border: 1px solid #b6d4fe; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Fitness Classes - Weekly Schedule</h1>
+
+    <% if (message) { %>
+    <div class="message"><%= message %></div>
+    <% } %>
+
+    <table>
+        <thead>
+            <tr><th>Day</th><th>Time</th><th>Type</th><th>Capacity</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            <% classes.forEach(function(c) { %>
+            <tr>
+                <td><%= c.dayOfWeek %></td>
+                <td><%= c.time %></td>
+                <td><%= c.type %></td>
+                <td><%= c.maxCapacity %></td>
+                <td>
+                    <form action="/fitness/register/<%= c.id %>" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-register">Register</button>
+                    </form>
+                    <form action="/fitness/unregister/<%= c.id %>" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-unregister">Unregister</button>
+                    </form>
+                </td>
+            </tr>
+            <% }); %>
+        </tbody>
+    </table>
+</body>
+</html>

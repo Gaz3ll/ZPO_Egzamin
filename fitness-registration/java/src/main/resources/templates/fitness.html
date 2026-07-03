@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Fitness Classes</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 900px; margin: auto; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f2f2f2; }
+        .btn { padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer; color: white; font-size: 14px; }
+        .btn-register { background: #4CAF50; }
+        .btn-unregister { background: #f44336; }
+        .btn:hover { opacity: 0.8; }
+        .message { background: #e7f3fe; border: 1px solid #b6d4fe; padding: 10px; margin: 10px 0; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Fitness Classes - Weekly Schedule</h1>
+
+    <div th:if="${message}" class="message" th:text="${message}"></div>
+
+    <table>
+        <thead>
+            <tr><th>Day</th><th>Time</th><th>Type</th><th>Capacity</th><th>Action</th></tr>
+        </thead>
+        <tbody>
+            <tr th:each="c : ${classes}">
+                <td th:text="${c.dayOfWeek}"></td>
+                <td th:text="${c.time}"></td>
+                <td th:text="${c.type}"></td>
+                <td th:text="${c.maxCapacity}"></td>
+                <td>
+                    <form action="#" th:action="@{/fitness/register/{id}(id=${c.id})}" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-register">Register</button>
+                    </form>
+                    <form action="#" th:action="@{/fitness/unregister/{id}(id=${c.id})}" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-unregister">Unregister</button>
+                    </form>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>
