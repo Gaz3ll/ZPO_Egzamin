@@ -1,17 +1,23 @@
+import hashlib
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
 security = HTTPBasic()
 
+
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
+
+
 USERS = {
-    "user1": "pass",
-    "user2": "pass",
+    "user1": hash_password("pass"),
+    "user2": hash_password("pass"),
 }
 
 
 def get_current_user(credentials: HTTPBasicCredentials = Depends(security)) -> str:
-    password = USERS.get(credentials.username)
-    return credentials.username if password and password == credentials.password else _unauthorized()
+    password_hash = USERS.get(credentials.username)
+    return credentials.username if password_hash and password_hash == hash_password(credentials.password) else _unauthorized()
 
 
 def _unauthorized():

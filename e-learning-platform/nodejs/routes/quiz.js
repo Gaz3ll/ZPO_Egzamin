@@ -67,7 +67,7 @@ router.post('/quiz/submit', auth, requireRole('STUDENT'), async (req, res) => {
  */
 router.post('/api/quiz/submit', auth, requireRole('STUDENT'), async (req, res) => {
   const questions = await Question.findAll();
-  const answers = req.body.answers || {};
+  const answers = (req.body && req.body.answers) || {};
   const answered = questions.filter(q => answers[q.id]);
   const correct = answered.filter(q => String(answers[q.id]).trim() === q.correctAnswer).length;
   const wrong = answered.length - correct;

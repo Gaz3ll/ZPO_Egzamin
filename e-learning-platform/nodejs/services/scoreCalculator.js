@@ -17,7 +17,7 @@ function calculateScore(totalQuestions, correctCount, wrongCount) {
  */
 function calculatePercentage(score, totalQuestions) {
   const maxScore = totalQuestions * CORRECT_POINTS;
-  return Math.max(0, (score / maxScore) * 100);
+  return maxScore === 0 ? 0 : Math.max(0, (score / maxScore) * 100);
 }
 
 /**

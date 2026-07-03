@@ -1,25 +1,24 @@
 const basicAuth = require('express-basic-auth');
+const crypto = require('crypto');
 
-// Użytkownicy oraz ich hasła w systemie dietetycznym
-const USERS = {
-  user1: 'pass',
-  user2: 'pass',
+const hashPassword = (pass) => crypto.createHash('sha256').update(pass).digest('hex');
+
+const HASHED_USERS = {
+  user1: hashPassword('pass'),
+  user2: hashPassword('pass'),
 };
 
-// Mapowanie ról użytkowników
 const ROLES = {
   user1: 'USER',
   user2: 'USER',
 };
 
-// Middleware Basic Auth
 const auth = basicAuth({
-  users: USERS,
+  authorizer: (username, password) => HASHED_USERS[username] === hashPassword(password),
   challenge: true,
   unauthorizedResponse: { error: 'Unauthorized' },
 });
 
-// Funkcyjne sprawdzenie roli użytkownika (brak instrukcji if)
 function requireRole(role) {
   return (req, res, next) => {
     const userRole = ROLES[req.auth.user];

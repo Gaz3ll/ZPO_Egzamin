@@ -21,7 +21,7 @@ def calculate_percentage(score: float, total_questions: int) -> float:
     Jeśli wynik punktowy jest ujemny, zwraca 0.0%.
     """
     max_score = total_questions * CORRECT_POINTS
-    return max(0.0, (score / max_score) * 100.0)
+    return 0.0 if max_score == 0 else max(0.0, (score / max_score) * 100.0)
 
 
 def is_passed(percentage: float) -> bool:

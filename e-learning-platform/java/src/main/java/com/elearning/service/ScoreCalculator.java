@@ -28,7 +28,7 @@ public class ScoreCalculator {
      */
     public double calculatePercentage(double score, int totalQuestions) {
         double maxScore = totalQuestions * CORRECT_POINTS;
-        return Math.max(0, (score / maxScore) * 100.0);
+        return maxScore == 0 ? 0.0 : Math.max(0, (score / maxScore) * 100.0);
     }
 
     /**

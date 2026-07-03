@@ -7,6 +7,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -16,13 +18,20 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/login", "/logout", "/css/**", "/js/**").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
+                .requestMatchers("/h2-console/**").hasRole("ADMIN")
                 .requestMatchers("/diet/**").authenticated()
                 .requestMatchers("/api/**").authenticated()
-                .anyRequest().permitAll()
+                .anyRequest().authenticated()
             )
             .formLogin(login -> login.defaultSuccessUrl("/diet", true))
             .logout(logout -> logout.logoutSuccessUrl("/login"))
@@ -34,8 +43,11 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         var manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("user1").password("{noop}pass").roles("USER").build());
-        manager.createUser(User.withUsername("user2").password("{noop}pass").roles("USER").build());
+        PasswordEncoder encoder = passwordEncoder();
+        
+        manager.createUser(User.withUsername("user1").password(encoder.encode("pass")).roles("USER").build());
+        manager.createUser(User.withUsername("user2").password(encoder.encode("pass")).roles("USER").build());
+        manager.createUser(User.withUsername("admin").password(encoder.encode("admin")).roles("ADMIN").build());
         return manager;
     }
 }

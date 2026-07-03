@@ -3,7 +3,7 @@ from typing import Dict
 
 
 class QuizSubmitRequest(BaseModel):
-    answers: Dict[str, str]
+    answers: Dict[str, str] = {}
 
 
 class QuizResultResponse(BaseModel):
