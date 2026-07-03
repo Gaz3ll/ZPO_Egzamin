@@ -1,0 +1,31 @@
+# Test profile configuration.
+#
+# NOTE: The 15+ required tests (algorithm + policy) are pure JUnit 5 unit tests.
+# They do NOT load a Spring context and do NOT need a database, so `./mvnw test`
+# passes without Docker or PostgreSQL.
+#
+# This profile exists as scaffolding for OPTIONAL integration tests. It points at
+# the same Dockerized PostgreSQL used at runtime; bring it up with `docker compose up -d`
+# before running any @SpringBootTest / @DataJpaTest you add. For fully isolated
+# integration tests, prefer Testcontainers (dependencies are already on the test
+# classpath) instead of this static datasource.
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/zpo_app
+    username: zpo_user
+    password: zpo_password
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+
+app:
+  security:
+    jwt:
+      secret: test-secret-test-secret-test-secret-0123456789abcdef
+      expiration-ms: 3600000
+      issuer: zpo-app-test
+  seed:
+    enabled: false
