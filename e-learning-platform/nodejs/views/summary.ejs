@@ -2,27 +2,164 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Quiz Summary</title>
+    <title>Podsumowanie Quizu</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 600px; margin: auto; padding: 20px; text-align: center; }
-        .result { padding: 30px; border-radius: 10px; margin: 20px 0; }
-        .passed { background: #d4edda; border: 1px solid #c3e6cb; }
-        .failed { background: #f8d7da; border: 1px solid #f5c6cb; }
-        .score { font-size: 48px; font-weight: bold; }
-        .label { font-size: 24px; margin: 10px 0; }
-        .details { margin-top: 20px; font-size: 16px; }
-        a { display: inline-block; margin-top: 20px; color: #007bff; text-decoration: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(22, 30, 49, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --success-gradient: linear-gradient(135deg, #10b981, #059669);
+            --fail-gradient: linear-gradient(135deg, #ef4444, #dc2626);
+            --primary-gradient: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #fff;
+        }
+        .result-badge {
+            display: inline-block;
+            padding: 25px;
+            border-radius: 50%;
+            margin: 10px 0 25px 0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            width: 110px;
+            height: 110px;
+            line-height: 110px;
+            text-align: center;
+            position: relative;
+        }
+        .result-badge.passed {
+            background: var(--success-gradient);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+        }
+        .result-badge.failed {
+            background: var(--fail-gradient);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+        }
+        .score-pct {
+            font-size: 32px;
+            font-weight: 700;
+            color: #white;
+            display: block;
+            margin-top: 35px;
+        }
+        .status-label {
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+        .status-label.passed {
+            color: #10b981;
+        }
+        .status-label.failed {
+            color: #ef4444;
+        }
+        .details-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            text-align: left;
+        }
+        .details-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 8px 0;
+            font-size: 14px;
+        }
+        .details-item span:first-child {
+            color: var(--text-secondary);
+        }
+        .details-item span:last-child {
+            font-weight: 600;
+            color: #fff;
+        }
+        .btn-again {
+            display: inline-block;
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        .btn-again:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
     </style>
 </head>
 <body>
-    <div class="result <%= result.passed ? 'passed' : 'failed' %>">
-        <div class="score"><%= result.percentage.toFixed(1) %>%</div>
-        <div class="label"><%= result.passed ? 'PASSED' : 'FAILED' %></div>
-        <div class="details">
-            <p>Score: <%= result.score.toFixed(1) %> / <%= result.total %></p>
-            <p>Correct: <%= result.correct %> | Wrong: <%= result.wrong %> | Total: <%= result.total %></p>
+    <div class="container">
+        <h1>Wynik Quizu</h1>
+        
+        <div class="result-badge <%= result.passed ? 'passed' : 'failed' %>">
+            <span class="score-pct"><%= result.percentage.toFixed(1) %>%</span>
         </div>
+        
+        <div class="status-label <%= result.passed ? 'passed' : 'failed' %>">
+            <%= result.passed ? 'ZALICZONE' : 'NIEZALICZONE' %>
+        </div>
+        
+        <div class="details-box">
+            <div class="details-item">
+                <span>Wynik punktowy:</span>
+                <span><%= result.score.toFixed(1) %> / <%= result.total %></span>
+            </div>
+            <div class="details-item">
+                <span>Poprawne odpowiedzi:</span>
+                <span style="color: #10b981;"><%= result.correct %></span>
+            </div>
+            <div class="details-item">
+                <span>Błędne odpowiedzi:</span>
+                <span style="color: #ef4444;"><%= result.wrong %></span>
+            </div>
+            <div class="details-item">
+                <span>Wszystkich pytań:</span>
+                <span><%= result.total %></span>
+            </div>
+        </div>
+        
+        <a href="/quiz" class="btn-again">Spróbuj ponownie</a>
     </div>
-    <a href="/quiz">Try Again</a>
 </body>
 </html>
