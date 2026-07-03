@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, Request, Form
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from typing import Dict
 from models import SessionLocal, Question, QuizResult
 from schemas import QuizSubmitRequest, QuizResultResponse
 from services.score_calculator import calculate_score, calculate_percentage, is_passed
-from routers.auth import get_current_user
+from routers.auth import get_current_user, require_student
 
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
@@ -27,8 +26,8 @@ def show_quiz(request: Request, db: Session = Depends(get_db), user: str = Depen
 
 
 @router.post("/quiz/submit", response_class=HTMLResponse)
-def submit_quiz(request: Request, db: Session = Depends(get_db), user: str = Depends(get_current_user)):
-    form = request.query_params
+async def submit_quiz(request: Request, db: Session = Depends(get_db), user: str = Depends(require_student)):
+    form = await request.form()
     questions = db.query(Question).all()
     correct = wrong = 0
     for q in questions:
@@ -50,7 +49,7 @@ def submit_quiz(request: Request, db: Session = Depends(get_db), user: str = Dep
 
 
 @router.post("/api/quiz/submit")
-def api_submit_answers(req: QuizSubmitRequest, db: Session = Depends(get_db), user: str = Depends(get_current_user)):
+def api_submit_answers(req: QuizSubmitRequest, db: Session = Depends(get_db), user: str = Depends(require_student)):
     questions = db.query(Question).all()
     correct = wrong = 0
     for q in questions:

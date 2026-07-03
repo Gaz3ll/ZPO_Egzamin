@@ -20,7 +20,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/h2-console/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                .requestMatchers("/quiz/**").hasAnyRole("STUDENT", "TEACHER")
+                .requestMatchers("/quiz/**").hasRole("STUDENT")
                 .requestMatchers("/teacher/**").hasRole("TEACHER")
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()

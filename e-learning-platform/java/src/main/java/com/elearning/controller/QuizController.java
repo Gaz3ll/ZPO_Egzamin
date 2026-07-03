@@ -21,6 +21,10 @@ public class QuizController {
         this.quizService = quizService;
     }
 
+    /**
+     * Wyświetla formularz rozwiązywania quizu z wszystkimi dostępnymi pytaniami.
+     * Dostępne tylko dla studentów.
+     */
     @GetMapping
     public String showQuiz(Model model) {
         List<Question> questions = quizService.getAllQuestions();
@@ -28,6 +32,10 @@ public class QuizController {
         return "quiz";
     }
 
+    /**
+     * Obsługuje wysyłanie odpowiedzi na quiz przez formularz webowy.
+     * Pobiera parametry żądania (odpowiedzi studenta), wylicza wynik i go zapisuje.
+     */
     @PostMapping("/submit")
     public String submitQuiz(Authentication auth, @RequestParam java.util.Map<String, String> params, Model model) {
         QuizSubmitRequest request = new QuizSubmitRequest();

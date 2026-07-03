@@ -1,14 +1,19 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 
+# Adres bazy danych SQLite dla platformy e-learningowej
 DATABASE_URL = "sqlite:///./elearning.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Użycie nowoczesnego importu declarative_base z sqlalchemy.orm zamiast sqlalchemy.ext.declarative
 Base = declarative_base()
 
 
 class Question(Base):
+    """
+    Model pytania testowego zawierający treść, poprawną odpowiedź, punkty oraz warianty odpowiedzi A-D.
+    """
     __tablename__ = "questions"
     id = Column(Integer, primary_key=True, index=True)
     content = Column(String, nullable=False)
@@ -21,15 +26,21 @@ class Question(Base):
 
 
 class QuizResult(Base):
+    """
+    Model przechowujący wynik quizu rozwiązany przez użytkownika.
+    """
     __tablename__ = "quiz_results"
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(String, nullable=False)
-    score = Column(Float, nullable=False)
-    percentage = Column(Float, nullable=False)
-    passed = Column(Boolean, nullable=False)
+    user_id = Column(String, nullable=False) # ID zalogowanego studenta
+    score = Column(Float, nullable=False)      # Wynik punktowy (może być ujemny)
+    percentage = Column(Float, nullable=False) # Wynik procentowy (>= 0%)
+    passed = Column(Boolean, nullable=False)   # Czy zaliczone (> 50%)
 
 
 def init_db():
+    """
+    Inicjalizuje bazę danych SQLite, tworzy tabele i dodaje początkowe pytania testowe (seed).
+    """
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     if db.query(Question).count() == 0:

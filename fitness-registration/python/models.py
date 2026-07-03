@@ -1,14 +1,19 @@
 from sqlalchemy import Column, Integer, String, create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import declarative_base, sessionmaker
 
+# Adres bazy danych SQLite dla systemu rejestracji fitness
 DATABASE_URL = "sqlite:///./fitness.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Użycie nowoczesnego importu declarative_base z sqlalchemy.orm zamiast sqlalchemy.ext.declarative
 Base = declarative_base()
 
 
 class FitnessClass(Base):
+    """
+    Model zajęć fitness określający typ, dzień tygodnia, godzinę i maksymalny limit osób (pojemność).
+    """
     __tablename__ = "fitness_classes"
     id = Column(Integer, primary_key=True, index=True)
     type = Column(String, nullable=False)
@@ -18,15 +23,22 @@ class FitnessClass(Base):
 
 
 class Registration(Base):
+    """
+    Model zapisów reprezentujący uczestnika zajęć fitness.
+    Określa status (lista główna - MAIN, lista rezerwowa - WAITING) i pozycję na liście rezerwowej.
+    """
     __tablename__ = "registrations"
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(String, nullable=False)
     class_id = Column(Integer, nullable=False)
-    status = Column(String, nullable=False)  # MAIN or WAITING
-    position = Column(Integer, nullable=True)
+    status = Column(String, nullable=False)  # MAIN lub WAITING
+    position = Column(Integer, nullable=True) # Pozycja w kolejce rezerwowej (None dla listy głównej)
 
 
 def init_db():
+    """
+    Tworzy tabele w bazie danych i dodaje przykładowy harmonogram zajęć (seed).
+    """
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     if db.query(FitnessClass).count() == 0:

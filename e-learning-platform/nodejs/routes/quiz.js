@@ -25,6 +25,49 @@ router.post('/quiz/submit', auth, requireRole('STUDENT'), async (req, res) => {
   res.render('summary', { result: { score, percentage, passed, correct, wrong, total: questions.length } });
 });
 
+/**
+ * @openapi
+ * /api/quiz/submit:
+ *   post:
+ *     summary: Prześlij odpowiedzi na quiz
+ *     description: Endpoint przyjmuje odpowiedzi studenta na quiz, oblicza wynik procentowy i status zaliczenia. Dostępne tylko dla studentów.
+ *     security:
+ *       - basicAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               answers:
+ *                 type: object
+ *                 additionalProperties:
+ *                   type: string
+ *                 example:
+ *                   "1": "B"
+ *                   "2": "A"
+ *     responses:
+ *       200:
+ *         description: Wynik quizu obliczony pomyślnie.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 score:
+ *                   type: number
+ *                 percentage:
+ *                   type: number
+ *                 passed:
+ *                   type: boolean
+ *                 correct:
+ *                   type: integer
+ *                 wrong:
+ *                   type: integer
+ *                 total:
+ *                   type: integer
+ */
 router.post('/api/quiz/submit', auth, requireRole('STUDENT'), async (req, res) => {
   const questions = await Question.findAll();
   let correct = 0, wrong = 0;

@@ -17,10 +17,11 @@
     <form action="#" th:action="@{/quiz/submit}" method="post">
         <div th:each="q : ${questions}" class="question">
             <h3><span th:text="${q.id}"></span>. <span th:text="${q.content}"></span></h3>
-            <label><input type="radio" th:name="${q.id}" value="A" th:text="${q.optionA}"> A</label>
-            <label><input type="radio" th:name="${q.id}" value="B" th:text="${q.optionB}"> B</label>
-            <label><input type="radio" th:name="${q.id}" value="C" th:text="${q.optionC}"> C</label>
-            <label><input type="radio" th:name="${q.id}" value="D" th:text="${q.optionD}"> D</label>
+            <!-- Każda opcja jest poprawnie powiązana w labeli; th:text przeniesione do tagu span aby uniknąć błędnego renderowania w tagu input -->
+            <label><input type="radio" th:name="${q.id}" value="A"> <span th:text="${q.optionA}">A</span></label>
+            <label><input type="radio" th:name="${q.id}" value="B"> <span th:text="${q.optionB}">B</span></label>
+            <label><input type="radio" th:name="${q.id}" value="C"> <span th:text="${q.optionC}">C</span></label>
+            <label><input type="radio" th:name="${q.id}" value="D"> <span th:text="${q.optionD}">D</span></label>
         </div>
         <button type="submit">Submit Quiz</button>
     </form>

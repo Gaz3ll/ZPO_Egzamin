@@ -13,6 +13,38 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'static')));
 
+// Konfiguracja Swagger UI dla dokumentacji API REST
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'E-Learning API',
+      version: '1.0.0',
+      description: 'Dokumentacja API platformy e-learningowej (ocenianie quizów)',
+    },
+    components: {
+      securitySchemes: {
+        basicAuth: {
+          type: 'http',
+          scheme: 'basic',
+        },
+      },
+    },
+    security: [
+      {
+        basicAuth: [],
+      },
+    ],
+  },
+  apis: [path.join(__dirname, 'routes', '*.js')],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(quizRoutes);
 app.use(teacherRoutes);
 

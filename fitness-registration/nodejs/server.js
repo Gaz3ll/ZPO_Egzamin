@@ -12,6 +12,38 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'static')));
 
+// Konfiguracja Swagger UI dla dokumentacji API REST
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Fitness Registration API',
+      version: '1.0.0',
+      description: 'Dokumentacja API systemu rejestracji na zajęcia fitness (kolejki/listy rezerwowe)',
+    },
+    components: {
+      securitySchemes: {
+        basicAuth: {
+          type: 'http',
+          scheme: 'basic',
+        },
+      },
+    },
+    security: [
+      {
+        basicAuth: [],
+      },
+    ],
+  },
+  apis: [path.join(__dirname, 'routes', '*.js')],
+};
+
+const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use(fitnessRoutes);
 
 async function seed() {

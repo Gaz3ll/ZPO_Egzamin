@@ -15,7 +15,6 @@ def get_db():
         yield db
     finally:
         db.close()
-    db.close()
 
 
 @router.get("/teacher/results", response_class=HTMLResponse)

@@ -165,7 +165,7 @@
 | Baza | H2 (memory) | SQLite | SQLite |
 | UI | Thymeleaf | Jinja2 | EJS |
 | Security | Spring Security | Basic Auth | express-basic-auth |
-| API docs | springdoc (Swagger) | FastAPI docs | (manual) |
+| API docs | springdoc (Swagger) | Swagger (FastAPI) | Swagger (swagger-ui-express) |
 | Test | JUnit 5 | pytest | Jest |
 
 **Funkcjonalności:**
@@ -185,7 +185,7 @@
 | Baza | H2 (memory) | SQLite | SQLite |
 | UI | Thymeleaf | Jinja2 | EJS |
 | Security | Spring Security | Basic Auth | express-basic-auth |
-| API docs | springdoc (Swagger) | FastAPI docs | (manual) |
+| API docs | springdoc (Swagger) | Swagger (FastAPI) | Swagger (swagger-ui-express) |
 | Test | JUnit 5 | pytest | Jest |
 
 **Funkcjonalności:**
@@ -259,6 +259,16 @@ npm test
 | user1 | pass | USER |
 | user2 | pass | USER |
 
-## Swagger UI (Java)
-- e-learning: `http://localhost:8080/swagger-ui.html`
-- fitness: `http://localhost:8081/swagger-ui.html`
+## Swagger UI / Dokumentacja API
+
+### Java (Spring Boot)
+- e-learning: `http://localhost:8080/swagger-ui/index.html` (lub `/swagger-ui.html`)
+- fitness: `http://localhost:8081/swagger-ui/index.html` (lub `/swagger-ui.html`)
+
+### Python (FastAPI)
+- e-learning: `http://localhost:8000/docs`
+- fitness: `http://localhost:8000/docs`
+
+### NodeJS (Express)
+- e-learning: `http://localhost:3000/api-docs`
+- fitness: `http://localhost:3001/api-docs`
