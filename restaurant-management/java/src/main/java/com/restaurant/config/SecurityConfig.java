@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/**").authenticated()
                 .anyRequest().authenticated()
             )
+            .httpBasic(org.springframework.security.config.Customizer.withDefaults())
             .formLogin(login -> login.defaultSuccessUrl("/restaurant", true))
             .logout(logout -> logout.logoutSuccessUrl("/login"))
             .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**", "/api/**"))
