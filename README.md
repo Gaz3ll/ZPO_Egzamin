@@ -3,8 +3,6 @@
 ## Struktura plików
 
 ```
-D:\EGZAMIN ZPO\
-│
 ├── e-learning-platform/
 │   ├── java/                              # Spring Boot
 │   │   ├── pom.xml
